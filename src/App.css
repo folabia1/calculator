@@ -36,3 +36,11 @@
     transform: rotate(360deg);
   }
 }
+
+.OperationButton {
+  background-color: orange;
+}
+
+.ClearButton, .EqualsButton {
+  background-color: lightblue;
+}
