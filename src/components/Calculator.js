@@ -3,39 +3,55 @@ import { NumberButton } from './NumberButton';
 import { OperationButton } from './OperationButton';
 import { EqualsButton } from './EqualsButton';
 import { ClearButton } from './ClearButton';
+import { NegativeSignButton } from "./NegativeSignButton";
 
 export function Calculator(props) {
   let [ stack, setStack ] = useState([]);
-  let [ doesStackHoldResult, setDoesStackHoldResult ] = useState(false)
+  let [ doesStackHoldResult, setDoesStackHoldResult ] = useState(false);
+  let [ result, setResult ] = useState(0);
+
   function pushToStack(value) {
     if (!isNaN(value)) { // DIGIT
       setStack((prevStack) => {
         if (doesStackHoldResult) {
           return [value];
         }
-        
         if (prevStack.length === 0) {
           setDoesStackHoldResult(false);
           return [value];
-        } else {
-          if (!isNaN(prevStack[prevStack.length-1])) {
-            return [...prevStack.slice(0, -1), prevStack[prevStack.length-1] + (value)]
-          } else {
-            return [...prevStack, value]
-          }
         }
+
+        if (!isNaN(prevStack[prevStack.length-1])) { // final stack item is a number
+          return [...prevStack.slice(0, -1), prevStack[prevStack.length-1] + (value)];
+        } else if (prevStack[prevStack.length-1] === "_") { // final stack item is (-)
+          return [...prevStack.slice(0, -1), "-" + (value)];
+        } else { // final stack item is an operation
+          return [...prevStack, value];
+        }
+      })
+    } else if (value === "_") { // (-) NEGATIVE
+      setStack((prevStack) => {
+        if (prevStack.length === 0) { // stack is empty
+          setDoesStackHoldResult(false)
+          return ["_"];
+        } else if (!isNaN(prevStack[prevStack.length-1])) { // final stack item is a number
+          return [...prevStack] 
+        } else { // final stack item is an operation or (-)
+          // setDoesStackHoldResult(false)
+          return [...prevStack, value]
+        }  
       })
     } else { // OPERATION
       setStack((prevStack) => {
         setDoesStackHoldResult(false);
         if (prevStack.length === 0) {
           return [];
-        } else {
-          if (/^[+\-*/]$/.test(prevStack[prevStack.length-1])) {
-            return [...prevStack]
-          } else {
-            return [...prevStack, value]
-          }
+        } 
+
+        if (!isNaN(prevStack[prevStack.length-1])) { // final stack item is a number
+          return [...prevStack, value]
+        } else { // final stack item is an operation or (-)
+          return [...prevStack]
         }
       })
     }
@@ -58,13 +74,12 @@ export function Calculator(props) {
       case "*":
         return parseFloat(num1) * parseFloat(num2);
       case "/":
-        return parseFloat(num1) / parseFloat(num2);
+        return Math.floor(parseFloat(num1) / parseFloat(num2));
       default:
         return null;
     }
   }
-
-  let [ result, setResult ] = useState(0);
+  
   function calculate() {
     let inputNumbers = []
     let inputOperations = []
@@ -99,6 +114,7 @@ export function Calculator(props) {
         {numbers.map(number => <NumberButton key={number} value={number} onClick={pushToStack} />)}
       </div>
       <div className="Operations">
+        <NegativeSignButton onClick={pushToStack}/>
         {operations.map(op => <OperationButton key={op} value={op} onClick={pushToStack} />)}
       </div>
       <ClearButton onClick={clearStack}/>
