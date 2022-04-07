@@ -8,7 +8,14 @@ import { NegativeSignButton } from "./NegativeSignButton";
 export function Calculator(props) {
   let [ stack, setStack ] = useState([]);
   let [ doesStackHoldResult, setDoesStackHoldResult ] = useState(false);
-  let [ result, setResult ] = useState(0);
+  let [ resultHistory, setResultHistory ] = useState([]);
+
+  // function updateResultHistory(prevResultHistory, newResult) {
+  //   while (prevResultHistory.length >= 5) {
+  //     prevResultHistory.unshift()
+  //   }
+  //   return [...prevResultHistory, newResult]
+  // }
 
   function pushToStack(value) {
     if (!isNaN(value)) { // DIGIT
@@ -71,7 +78,7 @@ export function Calculator(props) {
 
   function clearStack() {
     if (stack.length === 0) {
-      setResult("")
+      setResultHistory([])
     }
     setStack([]);
     setDoesStackHoldResult(false)
@@ -113,7 +120,13 @@ export function Calculator(props) {
         foundIndex = inputOperations.findIndex(item => item === opType);
       }
     });
-    setResult(inputNumbers[0]);
+    setResultHistory((prevResultHistory) => {
+      let history = prevResultHistory;
+      while (history.length >= 10) {
+        history.shift()
+      }
+      return [...history, inputNumbers[0]]
+    });
     setStack([inputNumbers[0]])
     setDoesStackHoldResult(true)
   }
@@ -125,7 +138,7 @@ export function Calculator(props) {
     <>
       <div className="Calculator">
         <div className="Display">
-          <p>Display: {stack.map(symbol => symbol + " ")}</p>
+          <h2>{stack.map(symbol => symbol + " ")}</h2>
         </div>
         <div className="TopButtons">
           <ClearButton onClick={clearStack}/>
@@ -140,7 +153,21 @@ export function Calculator(props) {
           <EqualsButton onClick={calculate}/>
         </div>
       </div>
-      <p>Result: {result}</p>
+      <h2>Result History</h2>
+      <div className="resultHistory">
+        {resultHistory.map((result, index) => 
+          <button 
+            className="resultButton" value={result} key={index}
+            onClick={(event) => {
+              setStack([event.target.value]);
+              setDoesStackHoldResult(true);
+              setResultHistory(prevResultHistory => prevResultHistory.slice(0, 1+index))
+            }}
+          >
+            {result}
+          </button>)}
+      </div>
+      
     </>
   )
 }
