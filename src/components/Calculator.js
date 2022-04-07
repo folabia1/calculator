@@ -119,21 +119,28 @@ export function Calculator(props) {
   }
 
   
-  const numbers = ["0","1","2","3","4","5","6","7","8","9"];
-  const operations = ['+','-','*','/',"."]//.concat(['^','(',')']);
+  const numbers = [".","0","1","2","3","4","5","6","7","8","9"].reverse();
+  const operations = ['+','-','*','/'].reverse()//.concat(['^','(',')']);
   return (
-    <div className="Calculator">
-      <div className="Numbers">
-        {numbers.map(number => <NumberButton key={number} value={number} onClick={pushToStack} />)}
+    <>
+      <div className="Calculator">
+        <div className="Display">
+          <p>Display: {stack.map(symbol => symbol + " ")}</p>
+        </div>
+        <div className="TopButtons">
+          <ClearButton onClick={clearStack}/>
+          <NegativeSignButton onClick={pushToStack}/>
+        </div>
+        <div className="Numbers">
+          {numbers.map(number => <NumberButton key={number} value={number} onClick={pushToStack} />)}
+          {/* <OperationButton id="DecimalPointButton" value="." onClick={pushToStack} /> */}
+        </div>
+        <div className="Operations">
+          {operations.map(op => <OperationButton key={op} value={op} onClick={pushToStack} />)}
+          <EqualsButton onClick={calculate}/>
+        </div>
       </div>
-      <div className="Operations">
-        <NegativeSignButton onClick={pushToStack}/>
-        {operations.map(op => <OperationButton key={op} value={op} onClick={pushToStack} />)}
-      </div>
-      <ClearButton onClick={clearStack}/>
-      <EqualsButton onClick={calculate}/>
-      <p>Display: {stack.map(symbol => symbol + " ")}</p>
       <p>Result: {result}</p>
-    </div>
+    </>
   )
 }

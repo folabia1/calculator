@@ -5,5 +5,5 @@ export function NumberButton(props) {
     props.onClick(event.target.value)
   }
 
-  return <button className="NumberButton" key={props.value} value={props.value} onClick={handleClick}>{props.value}</button>
+  return <button className="NumberButton" id={"num"+props.value} key={props.value} value={props.value} onClick={handleClick}>{props.value}</button>
 }
