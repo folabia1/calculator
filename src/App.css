@@ -80,3 +80,18 @@ button {
   height: 25px;
   margin: 2px auto;
 }
+
+.savedResults {
+  display: flex;
+  flex-direction: column-reverse;
+  justify-content: center;
+}
+
+.savedResults p {
+  margin: 2px;
+}
+
+.savedResult {
+  display: flex;
+  justify-content: center;
+}

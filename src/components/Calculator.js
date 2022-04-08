@@ -9,13 +9,7 @@ export function Calculator(props) {
   let [ stack, setStack ] = useState([]);
   let [ doesStackHoldResult, setDoesStackHoldResult ] = useState(false);
   let [ resultHistory, setResultHistory ] = useState([]);
-
-  // function updateResultHistory(prevResultHistory, newResult) {
-  //   while (prevResultHistory.length >= 5) {
-  //     prevResultHistory.unshift()
-  //   }
-  //   return [...prevResultHistory, newResult]
-  // }
+  let [ savedResults, setSavedResults ] = useState([]);
 
   function pushToStack(value) {
     if (!isNaN(value)) { // DIGIT
@@ -130,7 +124,6 @@ export function Calculator(props) {
     setStack([inputNumbers[0]])
     setDoesStackHoldResult(true)
   }
-
   
   const numbers = [".","0","1","2","3","4","5","6","7","8","9"].reverse();
   const operations = ['+','-','*','/'].reverse()//.concat(['^','(',')']);
@@ -156,16 +149,37 @@ export function Calculator(props) {
       <h2>Result History</h2>
       <div className="resultHistory">
         {resultHistory.map((result, index) => 
-          <button 
-            className="resultButton" value={result} key={index}
-            onClick={(event) => {
-              setStack([event.target.value]);
-              setDoesStackHoldResult(true);
-              setResultHistory(prevResultHistory => prevResultHistory.slice(0, 1+index))
-            }}
-          >
-            {result}
-          </button>)}
+          <div key={index}>
+            <button 
+              className="resultButton" value={result} key={index}
+              onClick={(event) => {
+                setStack([event.target.value]);
+                setDoesStackHoldResult(true);
+                setResultHistory(prevResultHistory => prevResultHistory.slice(0, 1+index))
+              }}
+            >{result}
+            </button>
+            
+            <button className="saveResultButton"
+              onClick={() => {
+                setSavedResults((prevSavedResults) => [...prevSavedResults, result])
+              }}
+            >SAVE
+            </button>
+          </div>)}
+      </div>
+      
+      <h2>Saved Variables</h2>
+      <div className="savedResults">
+        {savedResults.map((result, index) => (
+          <div className="savedResult" key={index}>
+            <input placeholder="name" type="text"/>
+            <p>{result}</p>
+            <button value={index} onClick={() =>
+              setSavedResults(prevSavedResults => prevSavedResults.filter((item,idx) => index !== idx))
+            }>REMOVE</button>
+          </div>
+        ))}
       </div>
       
     </>
