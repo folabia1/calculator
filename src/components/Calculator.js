@@ -15,6 +15,7 @@ export function Calculator(props) {
     if (!isNaN(value)) { // DIGIT
       setStack((prevStack) => {
         if (doesStackHoldResult) {
+          setDoesStackHoldResult(false)
           return [value];
         }
         if (prevStack.length === 0) { // stack is empty
