@@ -2,7 +2,7 @@
 
 ## Availability
 
-Check out this project at [folabia1.github.io/calculator](folabia1.github.io/calculator).
+Check out this project at [https://folabia1.github.io/calculator/](https://folabia1.github.io/calculator/).
 
 ## Skills Used
 
